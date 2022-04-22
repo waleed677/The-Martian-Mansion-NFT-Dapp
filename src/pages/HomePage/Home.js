@@ -184,7 +184,7 @@ function Home() {
       setNftCost(web3.utils.fromWei(puCost));
 
       let puMax = await contract.methods
-        .maxMintAmountPublic()
+        .maxMintAmount()
         .call();
       setMax(puMax);
     }
@@ -342,9 +342,8 @@ function Home() {
             ""
           )}
 
-          {canMintOG !== true &&
-            canMintWL !== true &&
-            (state == 2 || state == 1) ? (
+          { canMintWL !== true &&
+            (state == 1) ? (
             <s.connectButton
               style={{
                 textAlign: "center",
@@ -356,7 +355,7 @@ function Home() {
             </s.connectButton>
           ) : (
             ""
-          )}
+          )} 
         </s.Mint>
       </s.FlexContainer>
 
