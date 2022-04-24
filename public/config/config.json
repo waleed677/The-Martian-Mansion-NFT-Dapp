@@ -2,7 +2,7 @@
   "CONTRACT_ADDRESS": "0xc81a1ADEBFdfA15550698bd42851060a8cf4cDCf",
   "SCAN_LINK": "https://etherscan.io/address/0x938476ceeff2b2999c96455fc22ae5aa1951efdb",
   "NETWORK": {
-    "NAME": "Ethereum",
+    "NAME": "Ethereum Testnet",
     "SYMBOL": "ETH",
     "ID": 4
   },
