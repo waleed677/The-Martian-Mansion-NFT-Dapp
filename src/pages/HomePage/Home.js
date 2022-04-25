@@ -69,7 +69,7 @@ function Home() {
       })
       .then((receipt) => {
         setMintDone(true);
-        setFeedback(`Done, the ${CONFIG.NFT_NAME} is yours!`);
+        setFeedback(`Mint was a success, Welcome to the ${CONFIG.NFT_NAME}!`);
         setClaimingNft(false);
         blockchain.smartContract.methods
           .totalSupply()
@@ -169,7 +169,7 @@ function Home() {
       setDisplayCost(web3.utils.fromWei(wlCost));
       setNftCost(web3.utils.fromWei(wlCost));
       console.log(wlCost);
-      setFeedback("Are you WhiteListed Member?");
+      setFeedback("Are you a WL Member?");
 
       let wlMax = await contract.methods
         .maxMintAmountWL()
@@ -302,7 +302,7 @@ function Home() {
                 }}
               >
                 {" "}
-                {claimingNft ? "Confirm Transaction in Wallet" : "Mint"}{" "}
+                {claimingNft ? "Please Confirm The Transaction in your Crypto Wallet" : "Mint"}{" "}
                 {mintDone ? feedback : ""}{" "}
               </s.connectButton>{" "}
             </s.Container>
