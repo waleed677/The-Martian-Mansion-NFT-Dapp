@@ -4,10 +4,20 @@ import { connectWallet } from "../../redux/blockchain/blockchainActions";
 import { fetchData } from "./../../redux/data/dataActions";
 import { StyledRoundButton } from "./../../components/styles/styledRoundButton.styled";
 import * as s from "./../../styles/globalStyles";
+import whitelistAddresses from "../walletAddresses";
 
+// Import Libraries
 const { createAlchemyWeb3, ethers } = require("@alch/alchemy-web3");
 var Web3 = require('web3');
 var Contract = require('web3-eth-contract');
+const { MerkleTree } = require('merkletreejs');
+const keccak256 = require('keccak256');
+
+const leafNodes = whitelistAddresses.map(addr => keccak256(addr));
+const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
+const rootHash = merkleTree.getRoot();
+console.log('Whitelist Merkle Tree\n', merkleTree.toString());
+
 function Home() {
 
   const dispatch = useDispatch();
@@ -25,6 +35,7 @@ function Home() {
   const [canMintOG, setCanMintOG] = useState(false);
   const [disable, setDisable] = useState(false);
   const [max, setMax] = useState(0);
+  const [proof,setProof] = useState([]);
   const [CONFIG, SET_CONFIG] = useState({
     CONTRACT_ADDRESS: "",
     SCAN_LINK: "",
@@ -55,7 +66,7 @@ function Home() {
     setClaimingNft(true);
     setDisable(true);
     blockchain.smartContract.methods
-      .mint(mintAmount)
+      .mint(mintAmount,proof)
       .send({
         gasLimit: String(totalGasLimit),
         to: CONFIG.CONTRACT_ADDRESS,
@@ -81,7 +92,6 @@ function Home() {
         dispatch(fetchData(blockchain.account));
       });
   };
-
 
   const decrementMintAmount = () => {
     let newMintAmount = mintAmount - 1;
@@ -118,10 +128,14 @@ function Home() {
     if (blockchain.account !== "" && blockchain.smartContract !== null) {
       dispatch(fetchData(blockchain.account));
       if (state == 1) {
-        let mintWL = await blockchain.smartContract.methods
-          .isWhitelisted(blockchain.account)
-          .call();
-        setCanMintWL(mintWL);
+        const claimingAddress = keccak256(blockchain.account);
+        // `getHexProof` returns the neighbour leaf and all parent nodes hashes that will
+        // be required to derive the Merkle Trees root hash.
+        const hexProof = merkleTree.getHexProof(claimingAddress);
+        setProof(hexProof);
+        let mintWL = merkleTree.verify(hexProof, claimingAddress, rootHash);
+          setCanMintWL(mintWL);
+        console.log(mintWL);
         mintWL ? "" : setFeedback(`You are not WhiteListed Member!!!`);
         mintWL ? setDisable(false) : setDisable(true);
       }
@@ -137,9 +151,8 @@ function Home() {
       },
     });
     const abi = await abiResponse.json();
-    var contract = new Contract(abi, '0xc81a1ADEBFdfA15550698bd42851060a8cf4cDCf');
+    var contract = new Contract(abi, '0x1288E19f389e1BE0B9735985697678E16d55af5E');
     contract.setProvider(web3.currentProvider);
-    console.log(contract);
     // Get Total Supply
     const totalSupply = await contract.methods
       .totalSupply()
@@ -151,9 +164,6 @@ function Home() {
       .currentState()
       .call();
     setState(currentState);
-
-    console.log(currentState);
-
     // Set Price and Max According to State
 
     if (currentState == 0) {
@@ -168,7 +178,6 @@ function Home() {
         .call();
       setDisplayCost(web3.utils.fromWei(wlCost));
       setNftCost(web3.utils.fromWei(wlCost));
-      console.log(wlCost);
       setFeedback("Are you a WL Member?");
 
       let wlMax = await contract.methods
@@ -207,9 +216,11 @@ function Home() {
     SET_CONFIG(config);
   };
 
+
   useEffect(() => {
     getConfig();
     getDataWithAlchemy();
+
   }, []);
 
   useEffect(() => {
@@ -359,18 +370,18 @@ function Home() {
 
           {
             (state == 0) ? (
-            <s.connectButton
-              style={{
-                textAlign: "center",
-                color: "#fff",
-                cursor: "pointer",
-              }}
-            >
-              {feedback}
-            </s.connectButton>
-          ) : (
-            ""
-          )}
+              <s.connectButton
+                style={{
+                  textAlign: "center",
+                  color: "#fff",
+                  cursor: "pointer",
+                }}
+              >
+                {feedback}
+              </s.connectButton>
+            ) : (
+              ""
+            )}
         </s.Mint>
       </s.FlexContainer>
 

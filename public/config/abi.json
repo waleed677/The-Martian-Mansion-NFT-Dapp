@@ -346,6 +346,11 @@
         "internalType": "uint256",
         "name": "_mintAmount",
         "type": "uint256"
+      },
+      {
+        "internalType": "bytes32[]",
+        "name": "_merkleProof",
+        "type": "bytes32[]"
       }
     ],
     "name": "mint",
