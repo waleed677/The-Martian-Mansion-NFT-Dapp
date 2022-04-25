@@ -342,7 +342,7 @@ function Home() {
             ""
           )}
 
-          { canMintWL !== true &&
+          {canMintWL !== true &&
             (state == 1) ? (
             <s.connectButton
               style={{
@@ -355,7 +355,22 @@ function Home() {
             </s.connectButton>
           ) : (
             ""
-          )} 
+          )}
+
+          {
+            (state == 0) ? (
+            <s.connectButton
+              style={{
+                textAlign: "center",
+                color: "#fff",
+                cursor: "pointer",
+              }}
+            >
+              {feedback}
+            </s.connectButton>
+          ) : (
+            ""
+          )}
         </s.Mint>
       </s.FlexContainer>
 
