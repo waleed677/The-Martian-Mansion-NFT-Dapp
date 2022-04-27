@@ -1,12 +1,12 @@
 {
-  "CONTRACT_ADDRESS": "0x1288E19f389e1BE0B9735985697678E16d55af5E",
-  "SCAN_LINK": "https://etherscan.io/address/0x938476ceeff2b2999c96455fc22ae5aa1951efdb",
+  "CONTRACT_ADDRESS": "0x1401D33B02EE7460e68e4832a96e20FB0552dB14",
+  "SCAN_LINK": "https://etherscan.io/address/0x1401D33B02EE7460e68e4832a96e20FB0552dB14",
   "NETWORK": {
-    "NAME": "Ethereum Testnet",
+    "NAME": "Ethereum",
     "SYMBOL": "ETH",
-    "ID": 4
+    "ID": 1
   },
-  "NETWORK_ID_WALLET": 4,
+  "NETWORK_ID_WALLET": 1,
   "NFT_NAME": "The Martian Mansion",
   "SYMBOL": "MM",
   "MAX_SUPPLY": 1200 ,
